@@ -19,60 +19,59 @@ To support 10,000+ orders/day, the system must achieve:
 - **Peak hours (3x average)**: 0.35 orders/second
 - **Flash sales (10x average)**: 1.2 orders/second
 
-## 🚀 Quick Start Testing
+## 🖥️ Windows & Linux/Mac Quick Reference
 
 ### Prerequisites
-```bash
-# Make sure you have Python 3.7+ and required packages
-pip3 install aiohttp
+- **Python 3.7+** (Install from [python.org](https://www.python.org/downloads/))
+- **aiohttp** package
 
-# Start the Order Service
-./gradlew bootRun
-# OR with Docker
+#### Install aiohttp (Windows PowerShell/cmd)
+```powershell
+pip install aiohttp
+```
+
+#### Start the Order Service
+- **With Docker Compose (recommended, cross-platform):**
+```powershell
 docker-compose up -d
 ```
+- **With Gradle (if Java/Gradle installed):**
+```powershell
+./gradlew bootRun   # Linux/Mac
+# OR
+.\gradlew.bat bootRun   # Windows
+```
 
-### Option 1: Automated Test Script (Recommended)
+## 🚀 Running the 10K Orders Test
+
+### Option 1: Run the Python Load Test Script Directly (Recommended for Windows)
+
+You can run the load test directly with Python on any OS:
+
+#### Quick Validation (100 orders in 1 minute)
+```powershell
+python scripts/load_test.py --quick
+```
+
+#### Daily Simulation (1000 orders in 1 hour)
+```powershell
+python scripts/load_test.py --daily
+```
+
+#### Custom Burst Test
+```powershell
+python scripts/load_test.py --burst --orders 500 --duration 300
+```
+
+> **Note:** You can use `python3` or `python` depending on your system.
+
+### Option 2: Interactive Test Menu (Linux/Mac Bash Only)
+If you are on Linux/Mac, you can use the interactive script:
 ```bash
-# Make script executable
 chmod +x scripts/test_10k_orders.sh
-
-# Run the test menu
 ./scripts/test_10k_orders.sh
 ```
-
-### Option 2: Direct Python Script
-```bash
-# Quick validation (100 orders in 1 minute)
-python3 scripts/load_test.py --quick
-
-# Daily simulation (1000 orders in 1 hour)
-python3 scripts/load_test.py --daily
-
-# Custom burst test
-python3 scripts/load_test.py --burst --orders 500 --duration 300
-```
-
-### Option 3: Manual Testing with curl
-```bash
-# Single order test
-curl -X POST http://localhost:8080/api/orders \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customerId": 1,
-    "merchantId": 100,
-    "paymentMethod": "CREDIT_CARD",
-    "deliveryAddress": "123 Test Street, Bangkok",
-    "items": [
-      {
-        "menuItemId": 1,
-        "menuItemName": "Pad Thai",
-        "quantity": 2,
-        "unitPrice": 120.00
-      }
-    ]
-  }'
-```
+*On Windows, use Option 1 above.*
 
 ## 📊 Test Scenarios
 
@@ -83,8 +82,8 @@ curl -X POST http://localhost:8080/api/orders \
 - **Total**: ~100 orders
 - **Validates**: Response time, error rate, basic throughput
 
-```bash
-python3 scripts/load_test.py --quick
+```powershell
+python scripts/load_test.py --quick
 ```
 
 **Expected Results**:
@@ -99,8 +98,8 @@ python3 scripts/load_test.py --quick
 - **Total**: ~1000 orders (10% of daily target)
 - **Validates**: Sustained performance, memory leaks, database performance
 
-```bash
-python3 scripts/load_test.py --daily
+```powershell
+python scripts/load_test.py --daily
 ```
 
 **Expected Results**:
@@ -115,8 +114,8 @@ python3 scripts/load_test.py --daily
 - **Total**: ~500 orders
 - **Validates**: Peak hour performance, resource usage
 
-```bash
-python3 scripts/load_test.py --burst --orders 500 --duration 300
+```powershell
+python scripts/load_test.py --burst --orders 500 --duration 300
 ```
 
 **Expected Results**:
@@ -130,12 +129,18 @@ python3 scripts/load_test.py --burst --orders 500 --duration 300
 - **Rate**: Gradually increase until failure
 - **Validates**: Maximum capacity, failure modes
 
-```bash
-# Start low and increase
-python3 scripts/load_test.py --burst --orders 100 --duration 60   # 1.67 req/s
-python3 scripts/load_test.py --burst --orders 200 --duration 60   # 3.33 req/s  
-python3 scripts/load_test.py --burst --orders 300 --duration 60   # 5.0 req/s
+```powershell
+python scripts/load_test.py --burst --orders 100 --duration 60   # 1.67 req/s
+python scripts/load_test.py --burst --orders 200 --duration 60   # 3.33 req/s  
+python scripts/load_test.py --burst --orders 300 --duration 60   # 5.0 req/s
 ```
+
+## 📝 Notes for Windows Users
+- All Python-based tests work on Windows, Mac, and Linux.
+- Use `python` instead of `python3` if that's how your system is set up.
+- If you see errors about missing packages, run `pip install aiohttp`.
+- You can use PowerShell or Command Prompt for all commands above.
+- For Docker Compose, use `docker-compose` as shown above.
 
 ## 📈 Understanding Results
 
@@ -197,27 +202,8 @@ Target: > 99.9% (less than 1 error per 1000 requests)
 ## 🐳 Production-Like Testing
 
 ### With PostgreSQL Database
-```bash
-# Start with production-like setup
+```powershell
 docker-compose up -d
-
-# Wait for services to be ready
-sleep 30
-
-# Run tests against containerized service
-python3 scripts/load_test.py --quick --url http://localhost:8080
-```
-
-### With Monitoring
-```bash
-# Terminal 1: Start monitoring
-docker stats
-
-# Terminal 2: Monitor application metrics
-watch -n 5 "curl -s http://localhost:8080/actuator/metrics/order.created.total"
-
-# Terminal 3: Run load test
-python3 scripts/load_test.py --daily
 ```
 
 ## 🔧 Troubleshooting
@@ -311,3 +297,5 @@ The system **PASSES** the 10,000+ orders/day requirement when:
 - ✅ **Stable performance** throughout test duration
 
 If all criteria are met, the TTB Spark Order Service successfully satisfies the performance requirements! 🎉
+
+*This guide now supports both Windows and Linux/Mac users for all test scenarios.*
