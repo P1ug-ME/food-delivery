@@ -114,6 +114,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
 
 server:
   port: 8080

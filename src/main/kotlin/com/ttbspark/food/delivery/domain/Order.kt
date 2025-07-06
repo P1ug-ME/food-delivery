@@ -27,15 +27,15 @@ data class Order(
     val totalAmount: BigDecimal,
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     val paymentMethod: PaymentMethod,
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     val paymentStatus: PaymentStatus = PaymentStatus.PENDING,
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     val status: OrderStatus = OrderStatus.WAITING_FOR_CONFIRMATION,
     
     @Column(nullable = false)
