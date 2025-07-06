@@ -1,0 +1,127 @@
+spring:
+  application:
+    name: order-service
+  
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:orderdb}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+  
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:create-drop}
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
+  
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:true}
+      path: /h2-console
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.ttbspark.food.delivery: ${LOG_LEVEL:DEBUG}
+    org.springframework.web: ${WEB_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${SQL_LOG_LEVEL:DEBUG}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# External Services Configuration
+services:
+  payment:
+    url: ${PAYMENT_SERVICE_URL:http://payment-service:8081}
+    timeout: ${PAYMENT_SERVICE_TIMEOUT:30s}
+  
+  notification:
+    url: ${NOTIFICATION_SERVICE_URL:http://notification-service:8082}
+    timeout: ${NOTIFICATION_SERVICE_TIMEOUT:10s}
+  
+  inventory:
+    url: ${INVENTORY_SERVICE_URL:http://inventory-service:8083}
+    timeout: ${INVENTORY_SERVICE_TIMEOUT:15s}
+
+# Application Configuration
+app:
+  order:
+    max-items-per-order: ${MAX_ITEMS_PER_ORDER:50}
+    order-timeout-minutes: ${ORDER_TIMEOUT_MINUTES:30}
+    daily-order-limit: ${DAILY_ORDER_LIMIT:10000}
+
+---
+# Production Profile
+spring:
+  config:
+    activate:
+      on-profile: production
+  
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:orderdb}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:orderuser}
+    password: ${DB_PASSWORD:}
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  h2:
+    console:
+      enabled: false
+
+logging:
+  level:
+    com.ttbspark.food.delivery: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+
+---
+# Docker Profile
+spring:
+  config:
+    activate:
+      on-profile: docker
+  
+  datasource:
+    url: jdbc:postgresql://postgres:5432/orderdb
+    driver-class-name: org.postgresql.Driver
+    username: ${POSTGRES_USER:orderuser}
+    password: ${POSTGRES_PASSWORD:orderpass}
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  port: 8080
+
+services:
+  payment:
+    url: http://payment-service:8081
+  notification:
+    url: http://notification-service:8082
+  inventory:
+    url: http://inventory-service:8083

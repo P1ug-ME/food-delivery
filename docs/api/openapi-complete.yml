@@ -1,0 +1,189 @@
+openapi: 3.0.3
+info:
+  title: TTB Spark Food Delivery Order Service API
+  description: |
+    Comprehensive REST API for order management in the TTB Spark Food Delivery Platform.
+    
+    This service handles the complete order lifecycle from creation to completion,
+    supporting cashless payments and inter-service communication patterns required
+    for a microservices architecture.
+    
+    **Key Features:**
+    - Order creation and processing
+    - Status management with state machine validation
+    - Customer and merchant order queries
+    - Payment integration (Credit Card & Bank Transfer)
+    - Inter-service communication via webhooks
+    - Performance tested for 10,000+ orders/day
+  version: 1.0.0
+  contact:
+    name: TTB Spark Development Team
+    email: tawatchai.phe@ttbspark.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.ttb-food-delivery.com
+    description: Production server
+
+tags:
+  - name: Orders
+    description: Order management operations
+  - name: Webhooks
+    description: Inter-service communication endpoints
+  - name: Health
+    description: System health and monitoring
+
+paths:
+  /api/orders:
+    post:
+      tags: [Orders]
+      summary: Create new order
+      description: Create a new food delivery order with payment processing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+
+  /api/orders/{orderNumber}:
+    get:
+      tags: [Orders]
+      summary: Get order by number
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+
+  /api/orders/{orderNumber}/status:
+    put:
+      tags: [Orders]
+      summary: Update order status
+      parameters:
+        - name: orderNumber
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusRequest'
+      responses:
+        '200':
+          description: Status updated successfully
+
+  /api/webhooks/payment-status:
+    post:
+      tags: [Webhooks]
+      summary: Payment status webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentStatusWebhook'
+      responses:
+        '200':
+          description: Payment status processed
+
+  /actuator/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      responses:
+        '200':
+          description: Application is healthy
+
+components:
+  schemas:
+    CreateOrderRequest:
+      type: object
+      required: [customerId, merchantId, paymentMethod, deliveryAddress, items]
+      properties:
+        customerId:
+          type: integer
+          format: int64
+        merchantId:
+          type: integer
+          format: int64
+        paymentMethod:
+          type: string
+          enum: [CREDIT_CARD, BANK_TRANSFER]
+        deliveryAddress:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderItemRequest'
+
+    CreateOrderItemRequest:
+      type: object
+      properties:
+        menuItemId:
+          type: integer
+          format: int64
+        menuItemName:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        notes:
+          type: string
+
+    OrderResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        orderNumber:
+          type: string
+        customerId:
+          type: integer
+          format: int64
+        totalAmount:
+          type: number
+        status:
+          type: string
+          enum: [WAITING_FOR_CONFIRMATION, CONFIRMED, COOKING, READY_FOR_DELIVERY, DELIVERING, COMPLETED, CANCELLED]
+
+    UpdateOrderStatusRequest:
+      type: object
+      properties:
+        newStatus:
+          type: string
+          enum: [CONFIRMED, COOKING, READY_FOR_DELIVERY, DELIVERING, COMPLETED, CANCELLED]
+        reason:
+          type: string
+
+    PaymentStatusWebhook:
+      type: object
+      properties:
+        orderNumber:
+          type: string
+        paymentStatus:
+          type: string
+          enum: [PENDING, COMPLETED, FAILED]
+        transactionId:
+          type: string

@@ -1,0 +1,42 @@
+# TTB Spark Food Delivery Platform - Docker Compose
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ttb-postgres
+    environment:
+      POSTGRES_DB: orderdb
+      POSTGRES_USER: orderuser
+      POSTGRES_PASSWORD: orderpass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ttb-network
+
+  # Order Service (Main Service)
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ttb-order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      POSTGRES_USER: orderuser
+      POSTGRES_PASSWORD: orderpass
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - ttb-network
+
+volumes:
+  postgres_data:
+
+networks:
+  ttb-network:
+    driver: bridge
