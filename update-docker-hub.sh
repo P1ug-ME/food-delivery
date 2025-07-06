@@ -9,7 +9,7 @@ echo "🚀 TTB Spark Food Delivery - Docker Hub Update"
 echo "=============================================="
 
 # Configuration
-DOCKER_HUB_USERNAME="p1ug-me"
+DOCKER_HUB_USERNAME="warrunyou1"
 IMAGE_NAME="ttb-order-service"
 VERSION_TAG="v1.0.0"
 LATEST_TAG="latest"

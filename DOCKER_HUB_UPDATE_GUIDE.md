@@ -3,7 +3,7 @@
 ## 🎯 Current Status
 
 Your Docker configuration has been updated:
-- ✅ **Username**: `p1ug-me` 
+- ✅ **Username**: `warrunyou1` 
 - ✅ **Application**: Built and tested successfully
 - ✅ **Docker Images**: Built locally and ready for push
 - ⏳ **Docker Hub Login**: Required to push images
@@ -13,7 +13,7 @@ Your Docker configuration has been updated:
 Run this command and enter your credentials:
 
 ```bash
-docker login --username p1ug-me
+docker login --username warrunyou1
 ```
 
 **Enter your Docker Hub password when prompted**
@@ -44,13 +44,13 @@ After successful push, you'll have:
 
 | **Image** | **Docker Hub URL** |
 |-----------|-------------------|
-| **Latest** | `docker pull p1ug-me/ttb-order-service:latest` |
-| **Versioned** | `docker pull p1ug-me/ttb-order-service:v1.0.0` |
+| **Latest** | `docker pull warrunyou1/ttb-order-service:latest` |
+| **Versioned** | `docker pull warrunyou1/ttb-order-service:v1.0.0` |
 
 ## 📊 Docker Hub Repository
 
 Your TTB Spark Food Delivery images will be available at:
-**https://hub.docker.com/r/p1ug-me/ttb-order-service**
+**https://hub.docker.com/r/warrunyou1/ttb-order-service**
 
 ## 🧪 Test Your Deployed Images
 
@@ -58,8 +58,8 @@ After successful push, test your images:
 
 ```bash
 # Pull and run the latest image
-docker pull p1ug-me/ttb-order-service:latest
-docker run -p 8080:8080 p1ug-me/ttb-order-service:latest
+docker pull warrunyou1/ttb-order-service:latest
+docker run -p 8080:8080 warrunyou1/ttb-order-service:latest
 
 # Test the application
 curl http://localhost:8080/actuator/health
@@ -76,15 +76,15 @@ https://github.com/P1ug-ME/food-delivery
 
 ### Docker Hub Images
 ```
-Latest: docker pull p1ug-me/ttb-order-service:latest
-Versioned: docker pull p1ug-me/ttb-order-service:v1.0.0
-Repository: https://hub.docker.com/r/p1ug-me/ttb-order-service
+Latest: docker pull warrunyou1/ttb-order-service:latest
+Versioned: docker pull warrunyou1/ttb-order-service:v1.0.0
+Repository: https://hub.docker.com/r/warrunyou1/ttb-order-service
 ```
 
 ### Quick Deployment Commands
 ```bash
 # Using Docker
-docker run -p 8080:8080 p1ug-me/ttb-order-service:latest
+docker run -p 8080:8080 warrunyou1/ttb-order-service:latest
 
 # Using Docker Compose (from repository)
 git clone https://github.com/P1ug-ME/food-delivery.git
@@ -98,7 +98,7 @@ If the automated script has issues, you can manually push:
 
 ```bash
 # Login to Docker Hub
-docker login --username p1ug-me
+docker login --username warrunyou1
 
 # Build images
 docker build -t p1ug-me/ttb-order-service:v1.0.0 -t p1ug-me/ttb-order-service:latest .

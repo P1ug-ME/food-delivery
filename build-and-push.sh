@@ -7,7 +7,7 @@ set -e
 
 # Configuration
 IMAGE_NAME="ttb-order-service"
-DOCKER_HUB_USERNAME="p1ug-me"  # Your Docker Hub username
+DOCKER_HUB_USERNAME="warrunyou1"  # Your Docker Hub username
 TAG="latest"
 FULL_IMAGE_NAME="${DOCKER_HUB_USERNAME}/${IMAGE_NAME}:${TAG}"
 
